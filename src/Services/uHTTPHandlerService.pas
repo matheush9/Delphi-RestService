@@ -1,4 +1,4 @@
-unit uAbstractAPI;
+unit uHTTPHandlerService;
 
 interface
 
@@ -10,7 +10,7 @@ uses
   uTypes;
 
 type
-  TAbstractAPI<T: class, constructor> = class abstract (TInterfacedObject)
+  THTTPHandlerService = class(TInterfacedObject)
   private
     FParams: IParamsService;
     FRESTClient: TRESTClient;
@@ -20,9 +20,9 @@ type
   public
     procedure Configure(const AParams: IParamsService);
 
-    function Execute(const AUrl: string): T; overload;
-    function Execute(const AUrl: string; const AObject: T;
-      const AMethod: THTTPTypeMethod): T; overload;
+    function Execute(const AUrl: string): string; overload;
+    function Execute(const AUrl: string; const AObject: string;
+      const AMethod: THTTPTypeMethod): string; overload;
     procedure ExecuteDelete(const AUrl: string);
 
     destructor Destroy; override;
@@ -35,18 +35,19 @@ uses
 
 { TAbstractAPi }
 
-procedure TAbstractAPI<T>.Configure(const AParams: IParamsService);
+procedure THTTPHandlerService.Configure(const AParams: IParamsService);
 begin
   FParams := AParams;
   FRESTClient    := TRESTClient.Create(nil);
   FRESTRequest   := TRESTRequest.Create(nil);
   FRESTResponse  := TRESTResponse.Create(nil);
+  //FRESTRequest.Params.;
 
   FRESTRequest.Client   := FRESTClient;
   FRESTRequest.Response := FRESTResponse;
 end;
 
-destructor TAbstractAPI<T>.Destroy;
+destructor THTTPHandlerService.Destroy;
 begin
   FRESTClient.Free;
   FRESTRequest.Free;
@@ -54,18 +55,19 @@ begin
   inherited;
 end;
 
-function TAbstractAPI<T>.Execute(const AUrl: string): T;
+function THTTPHandlerService.Execute(const AUrl: string): string;
 begin
-  FRESTClient.BaseURL := Format(FParams.GetUrl, [AUrl]);
+  FRESTClient.BaseURL := FParams.GetUrl + AUrl;
   FRESTRequest.Method := rmGET;
   FRESTRequest.Execute;
-  Result := TJson.JsonToObject<T>(FRESTRequest.Response.Content);
+  //FRESTRequest.ADDPARAMS
+  Result := FRESTRequest.Response.Content;
 end;
 
-function TAbstractAPI<T>.Execute(const AUrl: string; const AObject: T;
-  const AMethod: THTTPTypeMethod): T;
+function THTTPHandlerService.Execute(const AUrl: string; const AObject: string;
+  const AMethod: THTTPTypeMethod): string;
 begin
-  FRESTClient.BaseURL := Format(FParams.GetUrl, [AUrl]);
+  FRESTClient.BaseURL := FParams.GetUrl + AUrl;
   FRESTClient.ContentType := 'application/json';
 
   if AMethod = tmPost then
@@ -78,7 +80,7 @@ begin
     Options := [poDoNotEncode];
     Kind  := pkREQUESTBODY;
     Name  := 'body';
-    Value := TJson.ObjectToJsonString(AObject).Trim;
+    Value := AObject.Trim;
   end;
 
   with FRESTRequest.Params.AddItem do
@@ -90,10 +92,10 @@ begin
   end;
 
   FRESTRequest.Execute;
-  Result := TJson.JsonToObject<T>(FRESTRequest.Response.JSONText);
+  Result := FRESTRequest.Response.JSONText;
 end;
 
-procedure TAbstractAPI<T>.ExecuteDelete(const AUrl: string);
+procedure THTTPHandlerService.ExecuteDelete(const AUrl: string);
 begin
   FRESTClient.BaseURL := Format(FParams.GetUrl, [AUrl]);;
   FRESTClient.ContentType := 'application/json';
@@ -101,7 +103,7 @@ begin
   FRESTRequest.Execute;
 end;
 
-procedure TAbstractAPI<T>.SetContentType;
+procedure THTTPHandlerService.SetContentType;
 begin
   with FRESTRequest.Params.AddItem do
   begin

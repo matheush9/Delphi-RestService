@@ -12,12 +12,12 @@ type
     function GetUrl: string;
   end;
 
-  IHTTPMethodsService<T> = interface
+  IHTTPMethodsService = interface
     ['{61105668-021C-4160-9E1A-C56B7132EC88}']
-    function Get(const APath: string): T;
-    function GetByID(const APath, AID: string): T;
-    function Post(const APath: string; AObject: T): T;
-    function Put(const APath: string; AObject: T): T;
+    function Get(const APath: string): string;
+    function GetByID(const APath, AID: string): string;
+    function Post(const APath: string; AObject: string): string;
+    function Put(const APath: string; AObject: string): string;
     procedure Delete(const APath: string; AID: Integer);
   end;
 
