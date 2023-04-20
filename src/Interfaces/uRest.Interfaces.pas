@@ -3,13 +3,15 @@ unit uRest.Interfaces;
 interface
 
 uses
-  System.Generics.Collections, Vcl.StdCtrls;
+  System.Classes, Vcl.StdCtrls;
 
 type
   IParamsService = interface
     ['{4CA08E97-EB6A-4D5C-9651-4F212D65CB65}']
     function SetUrl(const AValue: string): IParamsService;
     function GetUrl: string;
+    function SetQueryParams(const AValue: TStringList): IParamsService;
+    function GetQueryParams: TStringList;
   end;
 
   IHTTPMethodsService = interface
