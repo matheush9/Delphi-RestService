@@ -16,8 +16,8 @@ type
     function Get(const APath: string): string;
     function GetByID(const APath, AID: string): string;
 
-    function Post(const APath: string; AObject: string): string;
-    function Put(const APath: string; AObject: string): string;
+    function Post(const APath: string; AJSONRequestBody: string): string;
+    function Put(const APath: string; AJSONRequestBody: string): string;
     procedure Delete(const APath: string; AID: Integer);
 
     constructor Create(const Params: IParamsService);
@@ -57,14 +57,14 @@ begin
   Result := Execute(APath + '/' + AID);
 end;
 
-function THTTPMethodsService.Post(const APath: string; AObject: string): string;
+function THTTPMethodsService.Post(const APath: string; AJSONRequestBody: string): string;
 begin
-  Result := Execute(APath, AObject, tmPost);
+  Result := Execute(APath, AJSONRequestBody, tmPost);
 end;
 
-function THTTPMethodsService.Put(const APath: string; AObject: string): string;
+function THTTPMethodsService.Put(const APath: string; AJSONRequestBody: string): string;
 begin
-  Result := Execute(APath, AObject, tmUpdate);
+  Result := Execute(APath, AJSONRequestBody, tmUpdate);
 end;
 
 procedure THTTPMethodsService.Delete(const APath: string; AID: Integer);

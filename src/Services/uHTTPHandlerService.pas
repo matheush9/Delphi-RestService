@@ -21,7 +21,7 @@ type
     procedure Configure(const AParams: IParamsService);
 
     function Execute(const AUrl: string): string; overload;
-    function Execute(const AUrl: string; const AObject: string;
+    function Execute(const AUrl: string; const AJSONRequestBody: string;
       const AMethod: THTTPTypeMethod): string; overload;
     procedure ExecuteDelete(const AUrl: string);
 
@@ -64,7 +64,7 @@ begin
   Result := FRESTRequest.Response.Content;
 end;
 
-function THTTPHandlerService.Execute(const AUrl: string; const AObject: string;
+function THTTPHandlerService.Execute(const AUrl: string; const AJSONRequestBody: string;
   const AMethod: THTTPTypeMethod): string;
 begin
   FRESTClient.BaseURL := FParams.GetUrl + AUrl;
@@ -80,7 +80,7 @@ begin
     Options := [poDoNotEncode];
     Kind  := pkREQUESTBODY;
     Name  := 'body';
-    Value := AObject.Trim;
+    Value := AJSONRequestBody.Trim;
   end;
 
   with FRESTRequest.Params.AddItem do
