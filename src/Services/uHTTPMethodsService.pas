@@ -15,11 +15,10 @@ type
   public
     function Get(const APath: string): string;
     function GetByID(const APath, AID: string): string;
-
     function Post(const APath: string; AJSONRequestBody: string): string;
     function Put(const APath: string; AJSONRequestBody: string): string;
-    procedure Delete(const APath: string; AID: Integer);
-
+    procedure Delete(const APath: string);
+    procedure DeleteById(const APath: string; AID: Integer);
     constructor Create(const Params: IParamsService);
     class function New(const Params: IParamsService): IHTTPMethodsService;
     destructor Destroy; override;
@@ -31,7 +30,6 @@ uses
   System.SysUtils;
 
 { TBasicRest<T> }
-
 constructor THTTPMethodsService.Create(const Params: IParamsService);
 begin
   Configure(Params);
@@ -42,7 +40,8 @@ begin
   inherited;
 end;
 
-class function THTTPMethodsService.New(const Params: IParamsService): IHTTPMethodsService;
+class function THTTPMethodsService.New(const Params: IParamsService)
+  : IHTTPMethodsService;
 begin
   Result := Self.Create(Params);
 end;
@@ -57,17 +56,24 @@ begin
   Result := Execute(APath + '/' + AID);
 end;
 
-function THTTPMethodsService.Post(const APath: string; AJSONRequestBody: string): string;
+function THTTPMethodsService.Post(const APath: string;
+  AJSONRequestBody: string): string;
 begin
   Result := Execute(APath, AJSONRequestBody, tmPost);
 end;
 
-function THTTPMethodsService.Put(const APath: string; AJSONRequestBody: string): string;
+function THTTPMethodsService.Put(const APath: string;
+  AJSONRequestBody: string): string;
 begin
   Result := Execute(APath, AJSONRequestBody, tmUpdate);
 end;
 
-procedure THTTPMethodsService.Delete(const APath: string; AID: Integer);
+procedure THTTPMethodsService.Delete(const APath: string);
+begin
+  ExecuteDelete(APath);
+end;
+
+procedure THTTPMethodsService.DeleteById(const APath: string; AID: Integer);
 begin
   ExecuteDelete(APath + '/' + AID.ToString);
 end;
