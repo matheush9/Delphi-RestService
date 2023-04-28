@@ -19,6 +19,7 @@ type
 
     procedure SetContentType;
     procedure LoadParams;
+    procedure RaiseHTTPError(Sender: TCustomRESTRequest);
   public
     procedure Configure(const AParams: IParamsService);
     function Execute(const AUrl: string): string; overload;
@@ -32,7 +33,7 @@ type
 implementation
 
 uses
-  System.SysUtils, REST.Json;
+  System.SysUtils, System.StrUtils, REST.Json;
 
 { THTTPHandlerService }
 
@@ -45,6 +46,7 @@ begin
 
   FRESTRequest.Client := FRESTClient;
   FRESTRequest.Response := FRESTResponse;
+  FRESTRequest.OnHTTPProtocolError := RaiseHTTPError;
 end;
 
 destructor THTTPHandlerService.Destroy;
@@ -89,7 +91,7 @@ begin
     Name := 'Content-Type';
     Value := 'application/json;charset=UTF-8';
   end;
-
+  
   FRESTRequest.Execute;
   Result := FRESTRequest.Response.JSONText;
 end;
@@ -112,6 +114,21 @@ begin
       FRESTRequest.AddParameter(FParams.GetQueryParams.Names[I],
         FParams.GetQueryParams.Values[FParams.GetQueryParams.Names[I]]);
     end;
+  end;
+end;
+
+procedure THTTPHandlerService.RaiseHTTPError(Sender: TCustomRESTRequest);
+begin
+  if Sender.Response.StatusCode >= 400 then
+  begin
+    raise Exception.Create(Concat(Format('%s: %d %s'
+                                        ,['StatusCode'
+                                         ,Sender.Response.StatusCode
+                                         ,Sender.Response.StatusText])
+                                 ,sLineBreak
+                                 ,ifThen(not Sender.Response.ErrorMessage.IsEmpty, Sender.Response.ErrorMessage + sLineBreak)
+                                 ,Sender.Response.Content, sLineBreak
+                                 ));
   end;
 end;
 
