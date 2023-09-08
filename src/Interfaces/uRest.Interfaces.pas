@@ -12,6 +12,8 @@ type
     function GetUrl: string;
     function SetQueryParams(const AValue: TStringList): IParamsService;
     function GetQueryParams: TStringList;
+    function SetAuthorizationHeader(const AToken: string): IParamsService;
+    function GetAuthorizationHeader: string;
   end;
 
   IHTTPMethodsService = interface

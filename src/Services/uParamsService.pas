@@ -10,12 +10,15 @@ type
   private
     FUrl: string;
     FQueryParams: TStringList;
+    FAuthToken: string;
   public
     function SetUrl(const AValue: string): IParamsService;
     function GetUrl: string;
     function SetQueryParams(const AValue: TStringList)
       : IParamsService;
     function GetQueryParams: TStringList;
+    function SetAuthorizationHeader(const AToken: string): IParamsService;
+    function GetAuthorizationHeader: string;
 
     class function New: IParamsService;
     constructor Create;
@@ -63,6 +66,18 @@ function TParamsService.SetQueryParams(const AValue
 begin
   Result := Self;
   FQueryParams := AValue;
+end;
+
+function TParamsService.GetAuthorizationHeader: string;
+begin
+  Result := FAuthToken;
+end;
+
+function TParamsService.SetAuthorizationHeader(
+  const AToken: string): IParamsService;
+begin
+  Result := Self;
+  FAuthToken := AToken;
 end;
 
 end.

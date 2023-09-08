@@ -20,6 +20,7 @@ type
     procedure SetContentType;
     procedure LoadParams;
     procedure RaiseHTTPError(Sender: TCustomRESTRequest);
+    procedure SetAuthorizationHeader;
   public
     procedure Configure(const AParams: IParamsService);
     function Execute(const AUrl: string): string; overload;
@@ -47,6 +48,7 @@ begin
   FRESTRequest.Client := FRESTClient;
   FRESTRequest.Response := FRESTResponse;
   FRESTRequest.OnHTTPProtocolError := RaiseHTTPError;
+  SetAuthorizationHeader;
 end;
 
 destructor THTTPHandlerService.Destroy;
@@ -143,4 +145,10 @@ begin
   end;
 end;
 
+procedure THTTPHandlerService.SetAuthorizationHeader;
+begin
+  if not FParams.GetAuthorizationHeader.IsEmpty then
+    FRESTRequest.AddAuthParameter('Authorization', 'Bearer ' +
+      FParams.GetAuthorizationHeader, pkHTTPHEADER, [poDoNotEncode]);
+end;
 end.
