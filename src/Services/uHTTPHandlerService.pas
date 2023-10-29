@@ -18,7 +18,7 @@ type
     FRESTResponse: TRESTResponse;
 
     procedure SetContentType;
-    procedure LoadParams;
+    procedure LoadQueryParams;
     procedure RaiseHTTPError(Sender: TCustomRESTRequest);
     procedure SetAuthorizationHeader;
   public
@@ -63,6 +63,7 @@ function THTTPHandlerService.Execute(const AUrl: string): string;
 begin
   FRESTClient.BaseURL := FParams.GetUrl + AUrl;
   FRESTRequest.Method := rmGET;
+  LoadQueryParams;
   FRESTRequest.Execute;
   Result := FRESTRequest.Response.Content;
 end;
@@ -72,6 +73,7 @@ function THTTPHandlerService.Execute(const AUrl: string;
 begin
   FRESTClient.BaseURL := FParams.GetUrl + AUrl;
   FRESTClient.ContentType := 'application/json';
+  LoadQueryParams;
 
   if AMethod = tmPost then
     FRESTRequest.Method := rmPOST
@@ -102,12 +104,12 @@ procedure THTTPHandlerService.ExecuteDelete(const AUrl: string);
 begin
   FRESTClient.BaseURL := FParams.GetUrl + AUrl;
   FRESTClient.ContentType := 'application/json';
-  LoadParams;
+  LoadQueryParams;
   FRESTRequest.Method := rmDELETE;
   FRESTRequest.Execute;
 end;
 
-procedure THTTPHandlerService.LoadParams;
+procedure THTTPHandlerService.LoadQueryParams;
 begin
   if Assigned(FParams.GetQueryParams) then
   begin
