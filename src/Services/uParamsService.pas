@@ -3,7 +3,7 @@ unit uParamsService;
 interface
 
 uses
-  uRest.Interfaces, System.Classes;
+  uRest.Interfaces, System.Classes, System.SysUtils;
 
 type
   TParamsService = class(TInterfacedObject, IParamsService)
@@ -19,6 +19,7 @@ type
     function GetQueryParams: TStringList;
     function SetAuthorizationHeader(const AToken: string): IParamsService;
     function GetAuthorizationHeader: string;
+    procedure CleanQueryParams;
 
     class function New: IParamsService;
     constructor Create;
@@ -78,6 +79,11 @@ function TParamsService.SetAuthorizationHeader(
 begin
   Result := Self;
   FAuthToken := AToken;
+end;
+
+procedure TParamsService.CleanQueryParams;
+begin
+  FreeAndNil(FQueryParams);
 end;
 
 end.

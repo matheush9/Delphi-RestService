@@ -14,6 +14,7 @@ type
     function GetQueryParams: TStringList;
     function SetAuthorizationHeader(const AToken: string): IParamsService;
     function GetAuthorizationHeader: string;
+    procedure CleanQueryParams;
   end;
 
   IHTTPMethodsService = interface

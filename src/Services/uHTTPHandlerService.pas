@@ -119,6 +119,8 @@ begin
         FParams.GetQueryParams.Values[FParams.GetQueryParams.Names[I]]);
     end;
   end;
+
+  FParams.CleanQueryParams;
 end;
 
 procedure THTTPHandlerService.RaiseHTTPError(Sender: TCustomRESTRequest);
