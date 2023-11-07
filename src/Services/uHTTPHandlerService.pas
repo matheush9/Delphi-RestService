@@ -110,10 +110,12 @@ begin
 end;
 
 procedure THTTPHandlerService.LoadQueryParams;
+var
+  I: Integer;
 begin
   if Assigned(FParams.GetQueryParams) then
   begin
-    for var I := 0 to Pred(FParams.GetQueryParams.Count) do
+    for I := 0 to Pred(FParams.GetQueryParams.Count) do
     begin
       FRESTRequest.AddParameter(FParams.GetQueryParams.Names[I],
         FParams.GetQueryParams.Values[FParams.GetQueryParams.Names[I]]);
