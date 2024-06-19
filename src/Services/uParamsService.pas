@@ -10,6 +10,7 @@ type
   private
     FUrl: string;
     FQueryParams: TStringList;
+    FHeaders: TStringList;
     FAuthToken: string;
   public
     function SetUrl(const AValue: string): IParamsService;
@@ -20,6 +21,8 @@ type
     function SetAuthorizationHeader(const AToken: string): IParamsService;
     function GetAuthorizationHeader: string;
     procedure CleanQueryParams;
+    function AddHeader(AName, AValue: string): IParamsService;
+    function GetHeaders: TStringList;
 
     class function New: IParamsService;
     constructor Create;
@@ -30,9 +33,14 @@ implementation
 
 { TBaseParams }
 
+function TParamsService.AddHeader(AName, AValue: string): IParamsService;
+begin
+  FHeaders.AddPair(AName, AValue);
+end;
+
 constructor TParamsService.Create;
 begin
-
+  FHeaders := TStringList.Create;
 end;
 
 class function TParamsService.New: IParamsService;
@@ -42,7 +50,7 @@ end;
 
 destructor TParamsService.Destroy;
 begin
-
+  FHeaders.Free;
   inherited;
 end;
 
@@ -72,6 +80,11 @@ end;
 function TParamsService.GetAuthorizationHeader: string;
 begin
   Result := FAuthToken;
+end;
+
+function TParamsService.GetHeaders: TStringList;
+begin
+  Result := FHeaders;
 end;
 
 function TParamsService.SetAuthorizationHeader(

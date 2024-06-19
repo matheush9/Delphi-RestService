@@ -15,6 +15,8 @@ type
     function SetAuthorizationHeader(const AToken: string): IParamsService;
     function GetAuthorizationHeader: string;
     procedure CleanQueryParams;
+    function AddHeader(AName, AValue: string): IParamsService;
+    function GetHeaders: TStringList;
   end;
 
   IHTTPMethodsService = interface

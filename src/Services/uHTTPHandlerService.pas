@@ -21,6 +21,7 @@ type
     procedure LoadQueryParams;
     procedure RaiseHTTPError(Sender: TCustomRESTRequest);
     procedure SetAuthorizationHeader;
+    procedure AddCustomHeaders;
   public
     procedure Configure(const AParams: IParamsService);
     function Execute(const AUrl: string): string; overload;
@@ -38,6 +39,22 @@ uses
 
 { THTTPHandlerService }
 
+procedure THTTPHandlerService.AddCustomHeaders;
+var
+  LCustomHeaders: TStringList;
+begin
+  LCustomHeaders := FParams.GetHeaders;
+  for var I := 0 to Pred(LCustomHeaders.Count) do
+  begin
+    with FRESTRequest.Params.AddItem do
+    begin
+      Kind := pkHTTPHEADER;
+      Name := LCustomHeaders.Names[I];
+      Value := LCustomHeaders.Values[LCustomHeaders.Names[I]];
+    end;
+  end;
+end;
+
 procedure THTTPHandlerService.Configure(const AParams: IParamsService);
 begin
   FParams := AParams;
@@ -49,6 +66,7 @@ begin
   FRESTRequest.Response := FRESTResponse;
   FRESTRequest.OnHTTPProtocolError := RaiseHTTPError;
   SetAuthorizationHeader;
+  AddCustomHeaders;
 end;
 
 destructor THTTPHandlerService.Destroy;
